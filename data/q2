@@ -1,0 +1,35 @@
+CREATE TABLE clean_weather AS
+SELECT
+    station,
+    name,
+    latitude,
+    longitude,
+    elevation,
+
+    -- clean date fields
+    date AS raw_date,
+    substr(date, 1, 10) AS date_day,
+    cast(substr(date, 1, 4) as int) AS year,
+
+    -- temperature
+    CASE 
+        WHEN split(tmp, ',')[0] NOT IN ('+9999', '-9999')
+        THEN cast(split(tmp, ',')[0] AS int) / 10.0
+        ELSE NULL
+    END AS temperature,
+
+    -- dew point
+    CASE 
+        WHEN split(dew, ',')[0] NOT IN ('+9999', '-9999')
+        THEN cast(split(dew, ',')[0] AS int) / 10.0
+        ELSE NULL
+    END AS dew_point,
+
+    -- pressure
+    CASE 
+        WHEN split(slp, ',')[0] NOT IN ('+99999', '-99999')
+        THEN cast(split(slp, ',')[0] AS int) / 10.0
+        ELSE NULL
+    END AS pressure
+
+FROM raw_weather;

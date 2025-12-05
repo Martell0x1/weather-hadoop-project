@@ -1,0 +1,27 @@
+CREATE EXTERNAL TABLE raw_weather (
+    STATION          BIGINT,
+    `DATE`           STRING,
+    SOURCE           INT,
+    LATITUDE         DOUBLE,
+    LONGITUDE        DOUBLE,
+    ELEVATION        DOUBLE,
+    NAME             STRING,
+    REPORT_TYPE      STRING,
+    CALL_SIGN        STRING,
+    QUALITY_CONTROL  STRING,
+    WND              STRING,
+    CIG              STRING,
+    VIS              STRING,
+    TMP              STRING,
+    DEW              STRING,
+    SLP              STRING,
+    AJ1              STRING
+)
+ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
+WITH SERDEPROPERTIES (
+    "separatorChar" = ",",
+    "quoteChar"     = "\""
+)
+STORED AS TEXTFILE
+LOCATION '/user/hadoop/weather-project/cleaned_weather/';
+

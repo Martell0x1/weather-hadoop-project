@@ -1,0 +1,36 @@
+CREATE TABLE clean_weather AS
+SELECT
+    STATION,
+    CAST(`DATE` AS TIMESTAMP) AS event_time,
+    LATITUDE,
+    LONGITUDE,
+    ELEVATION,
+    NAME,
+    REPORT_TYPE,
+    CALL_SIGN,
+    QUALITY_CONTROL,
+    WND,
+    CIG,
+    VIS,
+    TMP,
+    DEW,
+    SLP,
+
+    -- Extract first field of TMP
+    CASE
+        WHEN split(TMP, ',')[0] IN ('9999', '99999', '+9999', '+99999') THEN NULL
+        ELSE CAST(split(TMP, ',')[0] AS INT) / 10.0
+    END AS CLEAN_TMP,
+
+    -- Extract first field of DEW
+    CASE
+        WHEN split(DEW, ',')[0] IN ('9999', '99999', '+9999', '+99999') THEN NULL
+        ELSE CAST(split(DEW, ',')[0] AS INT) / 10.0
+    END AS CLEAN_DEW
+
+FROM (
+    -- Merge the two tables
+    SELECT * FROM weather_data1
+    UNION ALL
+    SELECT * FROM weather_data2
+) merged;
